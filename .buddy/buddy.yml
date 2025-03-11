@@ -1,0 +1,27 @@
+- pipeline: \"Test and Deploy\"
+  trigger_mode: \"ON_EVERY_PUSH\"
+  ref_name: \"main\"
+  actions:
+    - action: \"Install dependencies\"
+      type: \"BUILD\"
+      working_directory: \"/\"
+      docker_image_name: \"node\"
+      docker_image_tag: \"20\"
+      execute_commands:
+        - npm ci
+    - action: \"Run tests\"
+      type: \"BUILD\"
+      working_directory: \"/\"
+      docker_image_name: \"node\"
+      docker_image_tag: \"20\"
+      execute_commands:
+        - npm test
+    - action: \"Deploy to production\"
+      type: \"DEPLOY\"
+      input_type: \"BUILD_ARTIFACTS\"
+      working_directory: \"/\"
+      docker_image_name: \"node\"
+      docker_image_tag: \"20\"
+      execute_commands:
+        - npm run build
+        - npm run start
